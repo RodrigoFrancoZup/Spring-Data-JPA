@@ -1,0 +1,81 @@
+Capítulo 01 - Primeiro Repositório
+Nesse capítulo aprendemos:
+
+⦁	Aprendemos que o Spring Data é um framework que ajuda nossa aplicação intregra-se com bando de dados. Com ele temos Agilidade, Praticidade e Robustez;
+
+⦁	Spring Data possui dentro dele: JPA, Hibernate, JDBC e Drivers. Isso traz facilidade como não precisar ficando criando EntityManagerFactory, EntityManager...
+
+⦁	Criando a aplicação passo a passo:
+
+	1- Entrtar no site https://start.spring.io/;
+
+	2- Selecionar Maven Project, Java e a versão sugerida do Spring Boot;
+
+	3- No campo group preencher com br.com.alura. No campo Artifact colocar spring-data. No campo Package name colocar spring.data (pois não aceita traço);
+
+	4-Selecionar Jar e 11 (Versão do seu JDK);
+
+	5- Na dependencia buscar pelo Spring Data JPA (Filtrar por JPA já acha);
+
+	6- Clicar em Generate. Fazer Download do arquivo zipado;
+
+	7- Extrair o  arquivo e na IDE selecionar opção Import -> Existing Maven Project;
+
+⦁	Criando o baco de dados passo a passo:
+
+	1- Vamos adicionar a dependencia do bando de dados que vamos utilizar no arquivo pom.xml. Colocar dentro da tag <dependencies>:
+	<dependency>
+		<groupId>mysql</groupId>
+		<artifactId>mysql-connector-java</artifactId>
+		<version>8.0.24</version>
+	</dependency>
+
+	2- Vamos criar nossa base de dados. Comando sql para o mysql: 
+	CREATE DATABASE alura;
+
+	3- Configurar a conexão do banco de dados com nossa aplicação. Essa configuração é no arquivo application.properties:
+
+	spring.datasource.url=jdbc:mysql://localhost/alura 
+	spring.datasource.username=root 
+	spring.datasource.password=mysql 
+	spring.datasource.testWhileIdle=true
+	spring.datasource.validationQuery=SELECT 1
+
+	4- Configurar a JPA com nossa aplicação. Ainda no arquivo application.properties:
+
+	spring.jpa.show-sql=false
+	spring.jpa.hibernate.ddl-auto=update
+	spring.jpa.hibernate.naming-strategy=org.hibernate.cfg.ImproveNamingStrategy
+	spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
+
+⦁	Criando classe do tipo ORM (conhecisa como Modelo, Pojo). Uma classe desse tipo resulta em uma tabela do banco:
+
+	1- Criar o pacote br.com.alura.spring.data.orm;
+
+	2- Nesse pacote criar a classe Cargo. Anotá-la com @Entity e @Table("name = cargos"), assim a tabela gerada no banco se chamará cargos. Criar o atributo String nome e Integer id. Criar os métodos get() e set() desses atributos;
+
+	3- O atributo id deve ser anotado com @Id e @GenerateValue(strategy = GenerationType.IDENTITY)
+
+	4- Rodar a classe principal do projeto, no caso SpringDataApplcation (ela tem o método main). Ao rodar esse método o banco terá criado a tabela cargos.
+
+⦁	Vamos criar passo a passo nosso primeiro repository, mas antes tenha em mente da hierarquia: 
+	Repository -> CRUD Repository -> PaginationAndSortingRepository -> JPA Repository. (JPA Repository é a mais completa)
+	Passo a passo para gerar o CargoRepository:
+
+	1- Criar o pacote br.com.alura.spring.data.repository;
+
+	2- Criar uma interface nesse pacote, chamada de CargoRepository. Ela deve herdar (extends) CrudRepository<Cargo, Integer>;
+
+	3- Anotar essa interface com @Repository;
+
+⦁	Executando no CargoRepository passo a passo:
+
+	1- Ir para classe principal (SpringDataApplication) e faze-la implementar (implements) a classe CommandLineRunner, isso serve para depois dela executar o método main ir para o método run() e será dentro do run() que vamos escrever nosso códigos;
+
+	2-  Criar na classe o atributo private final CargoRepository repository. Mas não podemos dar new em interface, como vamos criar um objeto repository? Para isso vamos pegar essa depêndencia via construtor, ficando assim: 
+	
+	public SpringDataApplication(CargoRepository repository) { 
+		this.repository = repository; 
+	}
+
+	3- Criar objeto Cargo com um nome. Depois chamar o repository.save(cargo). Assim teremos salvo um registro de cargo.
