@@ -7,7 +7,10 @@ import java.util.Scanner;
 
 import org.springframework.stereotype.Service;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.ProjectionOrBuilder;
+
 import br.com.alura.spring.data.orm.Funcionario;
+import br.com.alura.spring.data.orm.projecao.FuncionarioProjecao;
 import br.com.alura.spring.data.repository.FuncionarioRepository;
 
 @Service
@@ -32,6 +35,7 @@ public class RelatorioService {
 			System.out.println("1 - Busca de Funcionários por Nome");
 			System.out.println("2 - Busca de Funcionários por Nome, Data de Contratação e Valor de salário maior");
 			System.out.println("3 - Busca de Funcionários por uma data (superior)");
+			System.out.println("4 - Relatório de Funcionário e seu Salário");
 			Integer opcaoDigitada = Integer.parseInt(sc.nextLine());
 
 			switch (opcaoDigitada) {
@@ -51,12 +55,22 @@ public class RelatorioService {
 			case 3:
 				buscaFuncionarioPorDataSuperiorA();
 				break;
+				
+			case 4:
+				relatorioDeFuncionarioComIdNomeESalario();
+				break;
+				
 			default:
 				System.out.println("Voltando Menu Principal...");
 				repetirLoop = false;
 				break;
 			}
 		}
+	}
+
+	private void relatorioDeFuncionarioComIdNomeESalario() {
+		List<FuncionarioProjecao> projecoes = funcionarioRepository.relatorioDeFuncionarioComIdNomeESalario();
+		projecoes.forEach(p -> System.out.println("ID = " + p.getId() + "|" + " Nome = "  + p.getNome() + "|" + " Salário = " + p.getSalario()));
 	}
 
 	private void buscaFuncionarioPorDataSuperiorA() {

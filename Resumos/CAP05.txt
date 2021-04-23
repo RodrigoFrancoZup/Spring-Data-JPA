@@ -1,0 +1,30 @@
+Capítulo 05 - Trabalhando com Projeções
+Nesse capítulo aprendemos:
+
+⦁	O cliente de nossa aplicação pediu que quer ver um relatório que apresente apenas o ID, Nome e Salário de um Funcionário. Como podemos fazer isso? Uma listagem de Funcionário traz dados  alem desses pedidos pelo cliente. Sabemos que o comando SQL para fazer esse relatório é o -> SELECT f.id, f.nome, f.salario FROM funcionarios f
+	Assim vamos utilizar esse comando, mas seu retorno, vamos guardar 	onde? É aí que aplicamos o recuso de Projeção, para guardar dados 	de uma consulta que não traz propriamente o Objeto de Modelo, neste 	caso o objeto Funcionário.
+
+⦁	A Projeção é feita com uma interface, e seus métodos tem que seguir o padrao get + nome da coluna que está vindo o resultado (o professor disse que tem que ser igual o nome do atributo da classe, mas no exemplo dele ambos eram iguais, vou confirmas isso depois!)
+
+⦁	No lugar de criar a Projecção, poderiamos utilizar o conceito de Classe DTO, como já vimos ao construir uma API, ou seja, criar uma classe que simplemente representa outra.
+
+⦁	Aplicando projeção passo a passo:
+
+	1- Em funcionarioRepository criar o método:
+	@Query(value = "SELECT f.id, f.nome, f.salario FROM funcionarios f", nativeQuery = true) 
+	public List<FuncionarioProjecao> relatorioDeFuncionarioComIdNomeESalario();
+
+	2- Dentro do pacote orm criar o pacote projecao;
+
+	3- No pacote projecao criar a interface FuncionarioProjecao e criar os tres métodos: 
+	Integer getId(); 
+	String getNome(); 
+	Double getSalario();
+
+	4- Na classe CrudFuncionarioService criar o método que irá fazer esse relatório, nós chamamos de relatorioDeFuncionarioComIdNomeESalario;
+
+	O conteúdo desse método:
+	private void relatorioDeFuncionarioComIdNomeESalario() {
+		List<FuncionarioProjecao> projecoes = funcionarioRepository.relatorioDeFuncionarioComIdNomeESalario(); 
+		projecoes.forEach(p -> System.out.println(p.getId() + "|" + p.getNome() + "|" + p.getSalario())); 
+	}
