@@ -1,0 +1,27 @@
+Capítulo 02 - Operações CRUD
+Nesse capítulo aprendemos:
+
+⦁	A criar o Repository de Cargo, Funcionario e UnidadeDeTrabalho;
+
+⦁	A criar a classe ORM de Cargo, Funcionario e UnidadeDeTrabalho;
+
+⦁	A criar a classe Service CRUD (ler do terminal) de Cargo, Funcionario e UnidadeDeTrabalho;
+
+⦁	Podemos pegar valor digitado no terminal por usuário através do:
+
+	Scanner sc = new Scanner(System.in);
+	String valorDigitado = sc.nextLine();
+	//existe um método para ler o dado digitado de acordo com o tipo de 	dado que será digitado, por exemplo para ler int = sc.nextLineInt(), 	mas o método específico pra tipo é problemático. De preferencia em 	usar o sc.nextLine() e depois fazer o parse para o tipo desejado!;
+
+⦁	Quase um passo a passo (código báso porem grande demais, consultar o repositório):
+
+⦁	Que no Spring Data em seu Repository não há método update(). Para isso podemos utilizar o save(Objeto), passando o objeto com um Id preenchido;
+
+⦁	Anotar com @Service as classes de serviço;
+
+⦁	Na classe principal vamos precisar dos objetos services, mas não devemos dar new neles. Vamos deixar quem da new na classe principal (Spring) dar new também nas classes que precisamos usar (dependências). Para isso na classe Principal todo objeto que precisamos devemos criar através do construtor da classe principal;
+
+	1- Na classe principal, dentro do método run() teremos um loop para fazer o Terminal como nossa camada de View;
+
+	2- Criamos o pacote br.com.alura.spring.data.service 
+	Nesse pacote vamos colocar as classes do serviço de CRUD, por exemplo a classe CrudCargoService, classe que terá as operações de CRUD do objeto Carg
