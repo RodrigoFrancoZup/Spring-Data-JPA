@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import br.com.alura.spring.data.repository.service.CrudCargoService;
 import br.com.alura.spring.data.repository.service.CrudFuncionarioService;
 import br.com.alura.spring.data.repository.service.CrudUnidadeTrabalhoService;
+import br.com.alura.spring.data.repository.service.RelatorioService;
 
 @EnableJpaRepositories
 @SpringBootApplication
@@ -23,14 +24,15 @@ public class SpringDataApplication implements CommandLineRunner {
 	private CrudCargoService cargoService;
 	private CrudFuncionarioService funcionarioService;
 	private CrudUnidadeTrabalhoService unidadeTrabalhoService;
+	private RelatorioService relatorioService;
 
-	public SpringDataApplication(CrudCargoService cargoService, 
-			CrudFuncionarioService funcionarioService,
-			CrudUnidadeTrabalhoService unidadeTrabalhoService ) {
-		
+	public SpringDataApplication(CrudCargoService cargoService, CrudFuncionarioService funcionarioService,
+			CrudUnidadeTrabalhoService unidadeTrabalhoService, RelatorioService relatorioService) {
+
 		this.cargoService = cargoService;
 		this.funcionarioService = funcionarioService;
 		this.unidadeTrabalhoService = unidadeTrabalhoService;
+		this.relatorioService = relatorioService;
 	}
 
 	public static void main(String[] args) {
@@ -49,6 +51,7 @@ public class SpringDataApplication implements CommandLineRunner {
 			System.out.println("1 - Entra na seção de Cargo");
 			System.out.println("2 - Entra na seção de Funcionário");
 			System.out.println("3 - Entra na seção de Unidade Trabalho");
+			System.out.println("4 - Relatórios");
 			Integer opcaoDigitada = Integer.parseInt(sc.nextLine());
 			switch (opcaoDigitada) {
 			case 0:
@@ -62,11 +65,15 @@ public class SpringDataApplication implements CommandLineRunner {
 			case 2:
 				funcionarioService.menuFuncionario();
 				break;
-				
+
 			case 3:
 				unidadeTrabalhoService.menuUnidadeTrabalho();
 				break;
-				
+
+			case 4:
+				relatorioService.menuRelatorio();
+				break;
+
 			default:
 				System.out.println("Saindo..");
 				repetirLoop = false;

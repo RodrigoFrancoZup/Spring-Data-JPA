@@ -1,0 +1,18 @@
+Capítulo 03 - Derived Queries, JPQL e Native queries
+Nesse capítulo aprendemos:
+
+⦁	Com Spring Data podemos nos comunicar com o banco de dados de  3 maneiras:
+
+	-Derived Query = Devemos criar um método java respeitando o nome dos atributos do objeto que devemos consultar e das funções já existente (findBy = consulta). 
+	Exemplo: findByNome(String nome) vai buscar um objeto cujo o nome seja igual o recebido por parâmetro (eu estando na classe PessoaRepository o objeto será do tipo Pessoa). 
+	Exemplo 2 (Evitar ambiguidade): Para deixar claro que estamos navegando em um relacionamento de classes, podemos usar por exemplo: findByCategoria_Descricao;
+
+	-JPQL = Criamos o método com qualquer nome e anotamos o método com @Query. Na anotação da @Query vamos escrever o comando de busca, utilizando o nome do atributos java. Para utilizar o parâmetro na JPQL temos que usar o ":"
+	Exemplo: 
+	@Query("SELECT p FROM Pessoa p WHERE p.nome = :nome")
+	public Pessoa buscaPorNome(String nome)
+
+	-Query Native = Vamos utilizar o comando SQL igual utilizamos diretamente no banco de dados, por isso temos que utilizar os nomes de tabelas e atributos que estão no banco de dados. Também utilizamos o @Query Exempo:
+	@Query(value = "SELECT p FROM Pessoa p WHERE p.nome = :nome", nativeQuery = true)
+	public Pessoa buscaPorNome(String nome)
+
