@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import br.com.alura.spring.data.orm.Cargo;
@@ -87,7 +91,13 @@ public class CrudFuncionarioService {
 	}
 
 	private void visualizar() {
-		Iterable<Funcionario> funcionarios = funcionarioRepository.findAll();
+		System.out.println("Digite a página que deseja acessar da listagem - começa em 0:");
+		Integer pagina = Integer.parseInt(sc.nextLine());
+		Pageable paginacao = PageRequest.of(pagina, 5, Sort.by(Sort.Direction.DESC, "salario"));
+		Page<Funcionario> funcionarios = funcionarioRepository.findAll(paginacao);
+		System.out.println(funcionarios);
+		System.out.println("Página atual = " + funcionarios.getNumber());
+		System.out.println("Quantidade Total de Registros = " + funcionarios.getTotalElements());
 		for (Funcionario funcionario : funcionarios) {
 			System.out.println(funcionario.toString());
 		}
@@ -125,7 +135,7 @@ public class CrudFuncionarioService {
 		funcionario.setDataContratacao(data);
 		funcionario.setCargo(cargo);
 		funcionario.setUnidadeTrabalhos(unidades);
-		
+
 		funcionarioRepository.save(funcionario);
 
 	}
@@ -157,7 +167,7 @@ public class CrudFuncionarioService {
 		funcionario.setDataContratacao(data);
 		funcionario.setCargo(cargo);
 		funcionario.setUnidadeTrabalhos(unidades);
-		
+
 		funcionarioRepository.save(funcionario);
 	}
 

@@ -1,0 +1,44 @@
+Capítulo 04 - Paginação e Ordenação
+Nesse capítulo aprendemos:
+
+⦁	Nossos repositorios (Repository) estão herdando da interface CRUDRepository, mas que existe outras interfaces, são elas:
+	-CRUDRepository = Repositório especializado em fazer operações do CRUD;
+	-PaginAndSortingRepository = Repositório faz o CRUD e é especializado em paginação e ordenação;
+	-JPARepository = Faz CRUD, faz paginação/ordenação e é especializado em operações em lote (Por exemplo deleta ao mesmo tempo vários objetos);
+	-Há outras interfaces, que são usadas em programação reativa, não vamos usá-las agora.
+
+⦁	O que é paginação? É pegar o retorno de uma lista (Listagem) e dividi-la em grupos (conjuntos) em cada página. Sua vantagem é que agiliza a operação de listagem;
+
+⦁	Ordenação é deixar em ordem a listagem. Podemos deixar em ordem crescente ou decrescente, assim como em ordem alfabética ou ordem inversa da alfabética. Qualquer campo (atributo da classe/tabela) pode ser usado para ordenação. O padrão se não indicarmos nenhum é o ID em ordem Crescente.
+
+⦁	Para usar paginação e ordenação vamos utilizar o objeto Pageable do pacote org.springframework.data.domain. Vamos enviar esse objeto para o repository que fará a busca e o retorno do método passará a ser do tipo Page
+
+⦁	Fazendo a paginação de Funcionario no passo a passo:
+
+	1- Alterar a herança de FuncionarioRepository, agora passa a ser: FuncionarioRepository extends PagingAndSortingRepository<Funcionario, Integer>
+
+	2- Criar o objeto:
+	Pageable paginacao = PageRequest.of(pagina, 5, Sort.unsorted()); 
+	Atributo pagina = qual a página o usuário quer acessar - 5 = Deixamos fixo que cada página terá no máximo 5 registros - Sort = desativamos a ordenação por enquanto.
+
+	3- Alterar a chamada do métod findAll(), agora temos que enviar o objeto paginacao e o retorno será um Page<Funcionario>. Ficando assim: 
+	Page<Funcionario> funcionarios = funcionarioRepository.findAll(paginacao);
+
+	4- Informando ao usário dados da páginação:
+	//Mostra a quantidade que existe de páginas:
+		System.out.println(funcionarios); 
+	//Mostra a página atual:
+		System.out.println("Página atual = " + funcionarios.getNumber());
+	//Mostra quantos registros há na tabela:
+		System.out.println("Quantidade Total de Registros = " + funcionarios.getTotalElements());
+
+	OBS: O método findAll() do repositório é padrão do repository, se fosse escrito por nós com o findByNome() teriamos que por na assinatura do método o Pageable paginacao, caso quisessemos paginação.
+
+⦁	Fazendo a ordenação de Funcionario no passo a passo:
+
+	1- No trecho: 
+	Pageable paginacao = PageRequest.of(pagina, 5, Sort.unsorted()); 
+	Alterar para:
+	Pageable paginacao = PageRequest.of(pagina, 5, Sort.by(Sort.Direction.DESC, "salario"));
+
+	Agora estamos ordenando em ordem decrescente (Do maior para o menor) e o campo que vai ser levado em consideração será o salario.
