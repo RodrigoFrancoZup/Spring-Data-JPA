@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import br.com.alura.spring.data.repository.service.CrudCargoService;
 import br.com.alura.spring.data.repository.service.CrudFuncionarioService;
 import br.com.alura.spring.data.repository.service.CrudUnidadeTrabalhoService;
+import br.com.alura.spring.data.repository.service.RelatorioFuncionarioDinamico;
 import br.com.alura.spring.data.repository.service.RelatorioService;
 
 @EnableJpaRepositories
@@ -25,14 +26,17 @@ public class SpringDataApplication implements CommandLineRunner {
 	private CrudFuncionarioService funcionarioService;
 	private CrudUnidadeTrabalhoService unidadeTrabalhoService;
 	private RelatorioService relatorioService;
+	private RelatorioFuncionarioDinamico relatorioFuncionarioDinamico;
 
 	public SpringDataApplication(CrudCargoService cargoService, CrudFuncionarioService funcionarioService,
-			CrudUnidadeTrabalhoService unidadeTrabalhoService, RelatorioService relatorioService) {
+			CrudUnidadeTrabalhoService unidadeTrabalhoService, RelatorioService relatorioService,
+			RelatorioFuncionarioDinamico relatorioFuncionarioDinamico) {
 
 		this.cargoService = cargoService;
 		this.funcionarioService = funcionarioService;
 		this.unidadeTrabalhoService = unidadeTrabalhoService;
 		this.relatorioService = relatorioService;
+		this.relatorioFuncionarioDinamico = relatorioFuncionarioDinamico;
 	}
 
 	public static void main(String[] args) {
@@ -52,6 +56,7 @@ public class SpringDataApplication implements CommandLineRunner {
 			System.out.println("2 - Entra na seção de Funcionário");
 			System.out.println("3 - Entra na seção de Unidade Trabalho");
 			System.out.println("4 - Relatórios");
+			System.out.println("5 - Relatório Dinâmico de Funcionários");
 			Integer opcaoDigitada = Integer.parseInt(sc.nextLine());
 			switch (opcaoDigitada) {
 			case 0:
@@ -72,6 +77,10 @@ public class SpringDataApplication implements CommandLineRunner {
 
 			case 4:
 				relatorioService.menuRelatorio();
+				break;
+
+			case 5:
+				relatorioFuncionarioDinamico.relatorioDinamico();
 				break;
 
 			default:

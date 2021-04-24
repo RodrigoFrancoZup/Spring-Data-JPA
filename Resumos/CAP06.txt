@@ -1,0 +1,79 @@
+Capítulo 06 - Consultas dinâmicas
+Nesse capítulo aprendemos:
+
+-Podemos usar com o Spring Boot um banco de dados não relacionais, por exemplo o MongoDB;
+
+-Ao utilizar um banco desse tipo teremos que usar Repository específicos para o banco escolhido;
+
+-Ao utilizar um banco de dados desse tipo não precisamos adicionar a dependência do JPA e nem o driver do banco. O Spring tem uma dependência específica para o banco não relacional escolhido por você e esse dependência irá trazer tudo que é necessário;
+
+-Aprendemos que Pesquisa Dinâmica é aquela que o usuário pode escolher diversos campos (filtros) para fazer uma listagem
+
+-Aprendemos que criar uma pesquisa dinâmica apenas com JPA é muito difícil, mas com o Spring Data as coisas se tornam mais fáceis, graças a Specification que já nos dá alguns objetos prontos para se fazer a pesquisa dinâmica;
+
+-Passo a passo para se fazer uma pesquisa dinâmica de Funcionário, onde se pode passar os seguintes filtros: Nome (ou apenas alguns caracteres) e/ou Salário e/ou CPF e/ou Data de Contratação. Lembrando que um o valor do campo não vai invalidar o outro (por exemplo, buscar por nomes com "Aman" e Salário 5000 irá trazer por exemplo Pedro, embora ele não tenha "Aman" no nome ele tem um salário de 7000. Passo a passo:
+
+	1- Como vamos fazer uma pesquisa dinâmica com Funcionário vamos alterar a interface FuncionarioRepository, ela agora irá herdar uma segunda interface, no caso a JpaSpecificationExecutor<Funcionario>, pois essa é a interface específica para esse tipo de tarefa;
+
+	2- Vamos criar o pacote br.com.alura.spring.data.specification e nela a classe SpecificationFuncionario
+
+	3- Dentro da classe SpecificationFuncionario criar o seguinte método:
+	public static Specification<Funcionario> nome(String nome) {
+ 		return (root, criteriaQuery, CriteriaBuilder) 
+		-> CriteriaBuilder.like(root.get("nome"), "%" + nome + "%"); 
+	// O primeiro nome refere-se ao atributo de funcionario 
+	// O segundo nome refere-se ao filtro que o usuário digitou 
+	}
+
+	Obs: Vamos criar um método para cada campo (filtro) da pesquisa. O que vai mudar será o atributo e a operação do banco (LIKE, EQUAL, GREATETHAN), mais um exemplo:
+
+	public static Specification<Funcionario> cpf(String cpf) { 
+		return (root, criteriaQuery, CriteriaBuilder) 
+		-> CriteriaBuilder.equal(root.get("cpf"), cpf); 
+	// O primeiro atributo refere-se ao atributo de funcionario 
+	// O segundo atributo refere-se ao filtro (valor) que o usuário digitou }
+
+	4- No pacote Service vamos criar a classe RelatorioFuncionarioDinamico e anota-la com @Service. Vamos precisar criar o atributo de FuncionarioRepository e injetá-lo via construtor da classe;
+
+	5- Ainda nessa classe vamos criar o atributo: 
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+	6- Criar o método para executar a pesquisa:
+
+public void relatorioDinamico() {
+			System.out.println("Digite o nome que deseja filtrar:");
+			String nomeString = sc.nextLine();
+			if (nomeString.equalsIgnoreCase("NULL")) {
+				nomeString = null;
+			}
+			System.out.println("Digite o CPF que deseja filtrar:");
+			String cpf = sc.nextLine();
+			if (cpf.equalsIgnoreCase("NULL")) {
+				cpf = null;
+			}
+			System.out.println("Digite o salario que deseja filtrar:");
+			Double salario = Double.parseDouble(sc.nextLine());
+			if (salario == 0) {
+				salario = null;
+			}
+			System.out.println("Digite a data que deseja filtrar:");
+			String dataString = sc.nextLine();
+			LocalDate data;
+			if (dataString.equalsIgnoreCase("NULL")) {
+				data = null;
+			} else {
+				data = LocalDate.parse(dataString, formatter);
+			}
+
+			List<Funcionario> funcionarios = funcionarioRepository
+					.findAll(Specification.where(
+							SpecificationFuncionario.nome(nomeString)).or
+							(SpecificationFuncionario.cpf(cpf)).or
+							(SpecificationFuncionario.salario(salario)).or
+							(SpecificationFuncionario.dataContratacao(data)));
+			
+		funcionarios.forEach(f -> System.out.println(f.toString()));
+
+	}
+
+	7- Criar no menu principal uma opção para o usuário utilizar esse serviço.
